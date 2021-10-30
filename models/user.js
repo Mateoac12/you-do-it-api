@@ -33,6 +33,22 @@ const UserSchema = Schema({
     type: Boolean,
     default: false,
   },
+  classes: {
+    type: [
+      {
+        type: Schema.Types.ObjectId,
+        ref: 'Class',
+      },
+    ],
+  },
+  gymPartner: {
+    type: [
+      {
+        type: Schema.Types.ObjectId,
+        ref: 'User',
+      },
+    ],
+  },
 })
 
 UserSchema.methods.toJSON = function () {
