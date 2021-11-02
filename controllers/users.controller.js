@@ -2,7 +2,7 @@ const { hashPassword } = require('../helpers/hashPassword')
 const User = require('../models/user')
 const { nanoid } = require('nanoid')
 const cloudinary = require('cloudinary').v2
-const { Types } = require('mongoose')
+const { jwtGenerator } = require('../helpers/jwtGenerator')
 
 // cloudinary config
 cloudinary.config(process.env.CLOUDINARY_URL)
@@ -29,9 +29,20 @@ const createUser = async (req, res) => {
       password: passwordHash,
     })
 
-    await newUser.save()
+    try {
+      await newUser.save()
 
-    res.json({ user: newUser })
+      const tokenID = await jwtGenerator({ uid: newUser.id })
+      res.json({
+        user: newUser,
+        tokenID,
+      })
+    } catch (error) {
+      console.log(error)
+      res.status(500).json({
+        error,
+      })
+    }
   } catch (err) {
     console.error(err)
     res.status(500).json({ error: err })
