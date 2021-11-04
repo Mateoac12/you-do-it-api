@@ -5,9 +5,21 @@ const User = require('../models/user')
 // for trainers
 const createClass = async (req, res) => {
   const data = req.body
+  console.log(data)
   try {
     const newClass = new SportClass(data)
-    await newClass.save()
+
+    const [, userUpdated] = await Promise.all([
+      await newClass.save(),
+      await User.findByIdAndUpdate(data.creator, {
+        $push: {
+          classes: newClass,
+        },
+      }),
+    ])
+
+    console.log(userUpdated)
+
     res.json(newClass)
   } catch (error) {
     console.log(error.message)
