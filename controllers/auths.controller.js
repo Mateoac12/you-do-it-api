@@ -5,9 +5,12 @@ const User = require('../models/user')
 const loginUser = async (req, res) => {
   const { email, password } = req.body
 
-  const user = await User.findOne({ email })
-    .populate('gymPartner')
-    .populate('classes')
+  const user = await User.findOne({ email }).populate({
+    path: 'gymPartner',
+    populate: {
+      path: 'classes',
+    },
+  })
 
   if (!user || !user?.state) {
     return res.status(400).json({
