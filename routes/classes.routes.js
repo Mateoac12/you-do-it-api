@@ -3,6 +3,7 @@ const { body } = require('express-validator')
 const {
   createClass,
   addSportPlayer,
+  getClasses,
 } = require('../controllers/classes.controller')
 const {
   validatorErrors,
@@ -12,6 +13,17 @@ const {
 } = require('../middlewares')
 
 const router = Router()
+
+router.get(
+  '/',
+  [
+    validateToken,
+    body('uid', 'User ID is required').notEmpty(),
+    body('uid', 'User ID must be a correct ID').isMongoId(),
+    validatorErrors,
+  ],
+  getClasses
+)
 
 router.post(
   '/add',

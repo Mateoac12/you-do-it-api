@@ -2,6 +2,19 @@ const { Types } = require('mongoose')
 const SportClass = require('../models/sportClass')
 const User = require('../models/user')
 
+const getClasses = async (req, res) => {
+  const { uid } = req.body
+
+  User.findById(uid)
+    .populate({
+      path: 'gymPartner',
+      populate: {
+        path: 'classes',
+      },
+    })
+    .then((data) => res.json(data))
+}
+
 // for trainers
 const createClass = async (req, res) => {
   const data = req.body
@@ -89,6 +102,7 @@ const addSportPlayer = async (req, res) => {
 }
 
 module.exports = {
+  getClasses,
   createClass,
   addSportPlayer,
 }
